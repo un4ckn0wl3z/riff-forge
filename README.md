@@ -35,3 +35,7 @@ The page loads `boot.js` and a prebuilt `app.bundle.js` instead of importing the
 ## Select a bar range
 
 After import, choose one-based inclusive From bar / To bar values (for example 9–16). Only that excerpt is composed, previewed and exported; the resulting MIDI/WAV starts at zero and should be placed at the original starting bar in the DAW. Filenames include the original bar numbers. Tempo active at the start and subsequent time-signature/tempo changes are retained. The written bar order is used; repeats are still not expanded. Click ทั้งเพลง to restore the full score. Staff rows are visual layout, so selection uses bar numbers.
+
+## EZbass MIDI mapping
+
+Choose MIDI bass target → EZbass (+12 semitones) when exporting to EZbass. This adjusts only the bass note-on/off pitches and suppresses the General MIDI program change. Drum notes, velocity, timing and note lengths remain unchanged. Standard / General MIDI is the default. Playback and WAV continue using the original sounding pitches. Files exported with the EZbass profile include `_EZbass` in their name; do not transpose them a second time on import. This profile addresses the octave mismatch confirmed by comparing a supplied Riff Forge audio export (first note approximately 55 Hz) with its EZbass render (approximately 27.5 Hz).

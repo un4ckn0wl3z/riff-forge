@@ -22,3 +22,11 @@ const bytes=midi(mapped,generate(mapped,opt,99),null),tracks=parseMidi(bytes);as
 const huge=demo();huge.bars=Array.from({length:512},(_,i)=>({...huge.bars[i%8],index:i,start:i*4}));huge.length=2048;const large=midi(huge,generate(huge,{...opt,style:'death',density:100},99),null);parseMidi(large);
 const archive=zip([{name:'ทดสอบ.mid',data:bytes},{name:'second.mid',data:large}]);writeFileSync('/tmp/riff-forge-test.zip',new Uint8Array(await archive.arrayBuffer()));
 console.log('PASS: GP7 import/export, riff note timing, deterministic generation, six styles, riff following, odd meter, tempo map, MIDI events, 512-bar export, ZIP generation.');
+const standardTracks=parseMidi(midi(d,v,null,'mix','gm'));
+const ezTracks=parseMidi(midi(d,v,null,'mix','ezbass'));
+assert.deepEqual(ezTracks[0],standardTracks[0]);assert.deepEqual(ezTracks[1],standardTracks[1]);
+const standardBass=standardTracks[2].filter(e=>e.status===0x90||e.status===0x80),ezBass=ezTracks[2].filter(e=>e.status===0x90||e.status===0x80);
+assert.deepEqual(ezBass,standardBass.map(e=>({...e,note:e.note+12})));
+assert.ok(standardTracks[2].some(e=>e.status===0xc0&&e.program===34));assert.ok(ezTracks[2].every(e=>e.status!==0xc0));
+assert.deepEqual(v,generate(d,opt,123,0));
+console.log('PASS: EZbass target shifts only bass note-on/off by 12 semitones, omits program change, preserves drums, tempo, dynamics and timing, and does not mutate the arrangement.');

@@ -46,3 +46,9 @@ python -m http.server 8080 --directory dist
 จะสร้างและส่งออกเฉพาะช่วงที่เลือก รวมทั้ง bar เริ่มและ bar จบ
 ไฟล์เริ่มที่เวลา 0 ของช่วง ให้นำไปวางที่ bar เริ่มใน REAPER
 กด ทั้งเพลง เพื่อกลับมาใช้ทุกห้อง
+
+
+## รุ่นแก้ MIDI สำหรับ EZbass
+เลือก MIDI bass target → EZbass (+12 semitones) ก่อนดาวน์โหลด MIDI เบส
+โหมดนี้ยกเฉพาะ MIDI เบสขึ้น 12 semitones และไม่ส่ง Program Change โดยไม่เปลี่ยนเสียง Preview หรือ WAV
+เมื่อนำเข้า EZbass ไม่ต้อง transpose เพิ่มอีก
