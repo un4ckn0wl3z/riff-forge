@@ -31,3 +31,7 @@ Bundled PCM samples are rendered from the SONiVOX SoundFont distributed with alp
 ## Upload and startup compatibility fix
 
 The page loads `boot.js` and a prebuilt `app.bundle.js` instead of importing the application module graph at startup. Application source and worker modules now use `.js` filenames to avoid `.mjs` MIME issues on basic static servers. The native upload input is visible and intentionally has no browser file-type filter; extensions are validated in the app, allowing GP files with unknown MIME types. FileReader is used when File.arrayBuffer is unavailable. Startup and uncaught errors are displayed on the page. `npm run test:ui` runs a browser-like DOM test of the exact production bundle, Demo, Generate, uploaded GP and FileReader fallback. Set `RIFF_FORGE_GP_FILE` to test a local fixture without adding that file to the repository. This does not replace real-browser QA, which remains unavailable in this environment.
+
+## Select a bar range
+
+After import, choose one-based inclusive From bar / To bar values (for example 9–16). Only that excerpt is composed, previewed and exported; the resulting MIDI/WAV starts at zero and should be placed at the original starting bar in the DAW. Filenames include the original bar numbers. Tempo active at the start and subsequent time-signature/tempo changes are retained. The written bar order is used; repeats are still not expanded. Click ทั้งเพลง to restore the full score. Staff rows are visual layout, so selection uses bar numbers.

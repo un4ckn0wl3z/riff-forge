@@ -1,0 +1,11 @@
+import assert from'node:assert/strict';
+import{demo,generate,tempoMap,secondsAt,midi}from'../dist/engine.js';
+import{selectBars}from'../dist/range.js';
+const source=demo();source.bars[1].tempos=[{at:0,bpm:90}];source.bars[4].tempos=[{at:2,bpm:180}];const original=JSON.stringify(source),clip=selectBars(source,3,5);
+assert.equal(clip.bars.length,3);assert.equal(clip.bars[0].index,0);assert.equal(clip.bars[0].start,0);assert.equal(clip.bars[0].sourceIndex,2);assert.equal(clip.sourceStartBeat,8);assert.equal(clip.length,12);assert.equal(clip.bpm,90);assert.deepEqual(tempoMap(clip,null),[{beat:0,bpm:90},{beat:10,bpm:180}]);assert.equal(JSON.stringify(source),original);
+const opts={style:'metalcore',density:70,complexity:55,follow:85,humanize:25,fills:4,doubleKick:true,bassEnabled:true,bassMode:'auto'};const r=generate(clip,opts,42);assert.ok(r.events.length&&r.bassEvents.length);assert.ok(r.events.every(e=>e.beat>=0&&e.beat<12));assert.ok(r.bassEvents.every(e=>e.beat>=0&&e.beat<12));assert.ok(midi(clip,r,null).length);assert.equal(secondsAt(12,tempoMap(clip,120)),6);
+const last=selectBars(source,8,8);assert.equal(last.length,4);assert.equal(last.bars[0].index,0);assert.deepEqual(tempoMap(last,null),[{beat:0,bpm:180}]);
+for(const [a,b]of[[0,1],[3,2],[1,9],[1.5,3],['',3],[1,Infinity]])assert.throws(()=>selectBars(source,a,b));
+const odd=demo();odd.bars[0].length=3.5;for(let i=1;i<odd.bars.length;i++)odd.bars[i].start-=.5;const oddClip=selectBars(odd,2,3);assert.equal(oddClip.sourceStartBeat,3.5);assert.equal(oddClip.length,8);assert.equal(oddClip.bars[1].start,4);
+const tied=demo();tied.bars[0].hits=[{t:0,pitches:[35],duration:4}];tied.bars[1].hits=[];tied.bars[1].held=true;const tiedClip=selectBars(tied,2,2);assert.equal(generate(tiedClip,opts,1).bassEvents[0].note,23);
+console.log('PASS: inclusive bar ranges, inherited tempo, tempo changes within excerpt, timing rebased to zero, odd meters, tied bass roots, invalid ranges and bounded drum/bass output.');
