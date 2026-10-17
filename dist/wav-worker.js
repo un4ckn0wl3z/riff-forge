@@ -1,0 +1,2 @@
+import{renderWav}from'./render-wav.js';
+self.onmessage=e=>{try{const{song,result,override,kit,part}=e.data;const chunks=[];for(const chunk of renderWav(song,result,override,kit,part)){if(chunk.header)chunks.push(chunk.header);if(chunk.data)chunks.push(chunk.data);if(chunk.progress!==undefined)self.postMessage({progress:chunk.progress})}self.postMessage({blob:new Blob(chunks,{type:'audio/wav'})})}catch(e){self.postMessage({error:e.message||'WAV render failed'})}};
