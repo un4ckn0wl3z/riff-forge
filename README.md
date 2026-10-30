@@ -46,7 +46,10 @@ Choose MIDI bass target → EZbass (+12 semitones) when exporting to EZbass. Thi
 
 Select bars on the bar map, choose a genre, intensity, complexity and double kick under **Section overrides**, then press **+ ใช้กับ bar …**. Overridden bars are underlined in orange on the map. Overrides use full-song bar numbers, so they also apply when you generate only part of the song; later overrides win where they overlap. Remove one with ×.
 
-To generate only those sections and skip the bars in between, set **Generate** (under the bar range) to *Only bars with section overrides*. For example, overrides on bars 5–8 and 17–20 produce drums and bass for just those bars, and bars 9–16 stay silent. With Export start = Song start the files still line up at 0:00 in the DAW.
+To generate only those sections, set **Generate** (under the bar range) to one of:
+
+- *Only override bars — keep gaps silent*: overrides on bars 5–8 and 17–20 produce drums and bass for just those bars, and bars 9–16 stay silent. With Export start = Song start the files still line up at 0:00 in the DAW.
+- *Only override bars — join, remove gaps*: bars 5–8 are followed directly by 17–20 (8 bars in total). Each range starts at the tempo it has in the song and keeps its own meters and tempo changes. Files start at 0 and are named like `_bars5-8+17-20`, and Export start has no effect.
 
 ## Click and count-in
 

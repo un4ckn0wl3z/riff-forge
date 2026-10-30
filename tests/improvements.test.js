@@ -2,7 +2,7 @@ import assert from'node:assert/strict';
 import{readFileSync}from'node:fs';
 import * as a from'../dist/vendor/alphatab.js';
 import{analyze,playbackOrder,generate,clickEvents,optionsForBar,midi,demo,tempoMap,secondsAt,PPQ}from'../dist/engine.js';
-import{selectBars,padToSongStart,onlyBars}from'../dist/range.js';
+import{selectBars,padToSongStart,onlyBars,joinBars}from'../dist/range.js';
 import{renderWav}from'../dist/render-wav.js';
 import{decodeWav}from'../dist/wav.js';
 import{DRUM_NOTES}from'../dist/kit.js';
@@ -76,4 +76,17 @@ assert.deepEqual(only.events,full.events.filter(e=>[2,3,6,7].includes(barNo(e)))
 assert.deepEqual(only.onlyBars,[[2,3],[6,7]]);assert.equal(onlyBars(obClip,full,null),full);
 const obPad=padToSongStart(ob,obClip,only);assert.equal(Math.min(...obPad.result.events.map(e=>e.beat)),4,'aligned export keeps bar 2 at beat 4');
 
-console.log('PASS: repeat/ending playback order with written bar numbers and tempo, ranges over played bars, per-section style overrides, click track events, song-start aligned export, click MIDI/WAV stems with sample-accurate onsets, generate only selected override bars with silent gaps.');
+// Join override bars back to back: bars 1–2 then 5–6, bars 3–4 removed
+const js=demo();js.bars[2].tempos=[{at:0,bpm:120}];
+const joined=joinBars(js,[[1,2],[5,6]]);
+assert.equal(joined.bars.length,4);assert.equal(joined.length,16);
+assert.deepEqual(joined.bars.map(b=>b.start),[0,4,8,12]);assert.deepEqual(joined.bars.map(b=>b.index),[0,1,2,3]);assert.deepEqual(joined.bars.map(b=>b.sourceIndex),[0,1,4,5]);
+assert.deepEqual(tempoMap(joined,null),[{beat:0,bpm:156},{beat:8,bpm:120}],'each joined range starts at its own song tempo');
+assert.deepEqual(joined.joined,[[1,2],[5,6]]);assert.equal(joined.rangeStart,1);assert.equal(joined.rangeEnd,6);
+const jr=generate(joined,{...base,bassEnabled:true,overrides:[{from:5,to:6,options:{style:'black'}}]},5);
+assert.ok(jr.events.every(e=>e.beat>=0&&e.beat<16));assert.ok(jr.bassEvents.every(e=>e.beat<16));
+assert.ok(jr.events.some(e=>offSnare(e)&&e.beat>=8),'overrides follow the original bar numbers after joining');assert.ok(!jr.events.some(e=>offSnare(e)&&e.beat<8));
+const jm=midi(joined,jr,null,'drums');let tempos=0;for(let i=0;i<jm.length-2;i++)if(jm[i]===255&&jm[i+1]===81)tempos++;assert.equal(tempos,2);
+assert.throws(()=>joinBars(js,[[3,2]]));assert.deepEqual(joinBars(js,[[2,4]]).bars.map(b=>b.start),selectBars(js,2,4).bars.map(b=>b.start),'one range equals a plain excerpt');
+
+console.log('PASS: repeat/ending playback order with written bar numbers and tempo, ranges over played bars, per-section style overrides, click track events, song-start aligned export, click MIDI/WAV stems with sample-accurate onsets, generate only selected override bars with silent gaps or joined back to back.');

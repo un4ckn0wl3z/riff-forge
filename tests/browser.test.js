@@ -67,6 +67,11 @@ try{
  await page.selectOption('#exportAlign','song');
  const gapMid=await save('.download:not(.wav-download)','drums');const ons=[];{let i=14;while(i<gapMid.length&&gapMid.toString('latin1',i,i+4)==='MTrk'){const end=i+8+gapMid.readUInt32BE(i+4);let p=i+8,tick=0;while(p<end){let v=0,c;do{c=gapMid[p++];v=v*128+(c&127)}while(c&128);tick+=v;const st=gapMid[p];if(st===255)p+=3+gapMid[p+2];else{if((st&0xf0)===0x90&&gapMid[p+2]>0)ons.push(tick/960);p+=3}}i=end}}
  assert.ok(ons.length&&ons.every(b=>(b>=4&&b<12)||(b>=20&&b<32)),'drum notes only in bars 2–3 and 6–8');assert.ok(ons.some(b=>b<12)&&ons.some(b=>b>=20));
+ // join the override bars: 2–3 then 6–8 back to back, 5 bars = 20 beats
+ await page.selectOption('#rangeMode','joined');assert.match(await text('rangeHint'),/2–3 \+ 6–8 ต่อกัน 5 ห้อง/);
+ await page.click('#generate');await page.waitForSelector('.song-card');assert.match(await page.textContent('.song-card .details'),/Bar 2–3 \+ 6–8 \(joined\)/);
+ const joinMid=await save('.download:not(.wav-download)','drums'),jOns=[];{let i=14;while(i<joinMid.length&&joinMid.toString('latin1',i,i+4)==='MTrk'){const end=i+8+joinMid.readUInt32BE(i+4);let p=i+8,tick=0;while(p<end){let v=0,c;do{c=joinMid[p++];v=v*128+(c&127)}while(c&128);tick+=v;const st=joinMid[p];if(st===255)p+=3+joinMid[p+2];else{if((st&0xf0)===0x90&&joinMid[p+2]>0)jOns.push(tick/960);p+=3}}i=end}}
+ assert.ok(jOns.length&&jOns.every(b=>b>=0&&b<20),'joined file is 5 bars long');assert.ok(jOns.some(b=>b<8)&&jOns.some(b=>b>=8),'both ranges present');
  assert.deepEqual(errors,[]);
- console.log('PASS: real Chromium — GP upload with repeats/endings expanded, repeat toggle, bar-map tap selection, section override, generate, worker-clocked preview with click and count-in, click WAV aligned to song start within 2 ms, MIDI drums at the excerpt bar, range-aligned export, generate only override bars with silent gaps.');
+ console.log('PASS: real Chromium — GP upload with repeats/endings expanded, repeat toggle, bar-map tap selection, section override, generate, worker-clocked preview with click and count-in, click WAV aligned to song start within 2 ms, MIDI drums at the excerpt bar, range-aligned export, generate only override bars with silent gaps or joined.');
 }finally{await browser.close();server.close()}

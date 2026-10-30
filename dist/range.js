@@ -15,3 +15,9 @@ export function padToSongStart(full,clip,result){const offset=clip.sourceStartBe
 // Keep only the notes of the listed bar ranges (one-based full-song bar numbers); the bars in between stay silent.
 // Bass notes are cut at the end of their bar so nothing rings into a skipped bar.
 export function onlyBars(song,result,ranges){if(!ranges?.length)return result;const barAt=beat=>song.bars.find(b=>beat>=b.start-1e-9&&beat<b.start+b.length-1e-9),kept=b=>{const n=(b.sourceIndex??b.index)+1;return ranges.some(([from,to])=>n>=from&&n<=to)},keep=e=>{const b=barAt(e.beat);return!!b&&kept(b)};return{...result,events:result.events.filter(keep),bassEvents:(result.bassEvents||[]).filter(keep).map(e=>{const b=barAt(e.beat);return{...e,duration:Math.min(e.duration,b.start+b.length-e.beat)}}),onlyBars:ranges.map(r=>[...r])}}
+// Join several bar ranges back to back (one-based, played-bar numbers), dropping the bars in between.
+// Each range restarts at the tempo it has in the full song, and keeps its own meters and tempo changes.
+export function joinBars(source,ranges){if(!ranges?.length)throw Error('เลือกอย่างน้อยหนึ่งช่วง');const map=tempoMap(source,null),bars=[];let offset=0;
+ for(const[from,to]of ranges){const head=selectBars(source,from,to);head.bars.forEach((bar,k)=>{const copy={...bar,index:bars.length,start:offset,tempos:bar.tempos.map(t=>({...t}))};if(!k&&!copy.tempos.some(t=>t.at===0))copy.tempos.unshift({at:0,bpm:head.bpm});bars.push(copy);offset+=bar.length})}
+ const first=selectBars(source,ranges[0][0],ranges[0][1]);
+ return{...source,bpm:first.bpm,bars,length:offset,hasRepeats:false,initialBassRoot:first.initialBassRoot,rangeStart:ranges[0][0],rangeEnd:ranges[ranges.length-1][1],sourceBarCount:source.bars.length,sourceStartBeat:0,joined:ranges.map(r=>[...r])}}
