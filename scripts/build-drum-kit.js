@@ -6,7 +6,7 @@ const output={sampleRate:44100,ready:event,sampleRequest:event,samplesPlayed:eve
 const synth=new a.synth.AlphaSynth(output,100);
 if(!process.argv[2])throw Error('Usage: node scripts/build-drum-kit.js /path/to/sonivox.sf2');
 const sf=new Uint8Array(readFileSync(process.argv[2]));
-for(const note of [36,38,42,43,45,46,47,48,49,51]){
+for(const note of [36,37,38,42,43,44,45,46,47,48,49,51,53]){
  const midi=new a.midi.MidiFile();midi.division=960;midi.addEvent(new a.midi.TempoChangeEvent(0,500000));midi.addEvent(new a.midi.ProgramChangeEvent(0,0,9,0));midi.addEvent(new a.midi.ControlChangeEvent(0,0,9,7,100));midi.addEvent(new a.midi.ControlChangeEvent(0,0,9,10,64));midi.addEvent(new a.midi.ControlChangeEvent(0,0,9,11,127));midi.addEvent(new a.midi.NoteOnEvent(0,0,9,note,127));midi.addEvent(new a.midi.NoteOffEvent(0,7680,9,note,0));midi.addEvent(new a.midi.EndOfTrackEvent(0,9600));
  const options=new a.synth.AudioExportOptions();options.sampleRate=44100;options.soundFonts=[sf];options.masterVolume=.8;options.useSyncPoints=false;
  const exporter=synth.exportAudio(options,midi,[],new Map());const chunks=[];let chunk;while((chunk=exporter.render(500)))chunks.push(chunk.samples);

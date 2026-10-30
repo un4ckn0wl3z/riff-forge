@@ -30,6 +30,8 @@ const EXACT={
  // messages
  'อ่านไฟล์จากอุปกรณ์ไม่สำเร็จ':'Couldn’t read the file from this device','เลขในวงเล็บคือห้องในโน้ต':'the number in brackets is the written bar',
  'มี repeat / ending แต่กำลังอ่านตามลำดับห้องที่เขียน':'This file has repeats / endings but is being read in written order','เปิด Follow repeats & endings เพื่อเล่นตามจริง':'turn on Follow repeats & endings to play them',
+ 'มี triplet feel (shuffle) ในไฟล์ กลองและเบสจะ swing ตาม':'the file uses triplet feel (shuffle), so drums and bass swing with it',
+ 'double kick เปิด':'double kick on','double kick ปิด':'double kick off','ปรับต่อได้ตามต้องการ':'adjust as you like',
  'ใช้โน้ตกีตาร์และจังหวะจากแทร็กที่เลือก • อ่านตามลำดับห้องที่เขียน':'Uses the notes and rhythm of the selected track • read in written order',
  'ลบการตั้งค่าเฉพาะช่วงแล้ว กด Generate เพื่อสร้างใหม่':'Override removed. Press Generate to build again.','กด Generate ได้เลย':'press Generate',
  'เลือกช่วงที่จะสร้าง หรือเปลี่ยน Generate เป็นเฉพาะห้องที่ตั้งไว้ แล้วกด Generate':'pick the range to generate, or set Generate to the override bars only, then press Generate',
@@ -58,6 +60,7 @@ const PATTERNS=[
  [/^เล่นตาม repeat \/ ending: (\d+) ห้องตามลำดับที่เล่น \(เขียนไว้ (\d+) ห้อง\)$/,'Following repeats / endings: $1 bars in playback order ($2 written)'],
  [/^ลบการตั้งค่า bar (\d+)–(\d+)$/,'Remove the override for bar $1–$2'],
  [/^ตั้งแนว (.+) ให้ bar (\d+)–(\d+) แล้ว$/,'Set $1 for bar $2–$3'],
+ [/^ตั้งค่าเริ่มต้นของ (.+): Intensity (\d+)%$/,'Loaded $1 starting settings: Intensity $2%'],
  [/^อ่านไฟล์ไม่สำเร็จ: (.+)$/,(m,e)=>`Couldn’t read the file: ${translate(e)}`],
  [/^ไฟล์ส่งออกมีช่วงเงียบก่อน bar (\d+) วางที่ 0:00 ใน DAW ได้เลย$/,'exports include silence before bar $1, so they drop at 0:00 in your DAW'],
  [/^ไฟล์ส่งออกเริ่มที่ 0 ให้วางที่ bar (\d+) ในเพลงต้นฉบับ$/,'exports start at 0; place them at bar $1 of the original song'],

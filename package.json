@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Browser-local Guitar Pro to metal drum MIDI generator",
+  "description": "Browser-local Guitar Pro to drum and bass MIDI generator for metal, rock, funk, shuffle, reggae and more",
   "scripts": {
-    "test": "node tests/engine.test.js && node tests/audio.test.js && node tests/bass.test.js && node tests/range.test.js && node tests/improvements.test.js && node tests/i18n.test.js",
-    "check": "node --check dist/app.js && node --check dist/engine.js && node --check dist/audio.js && node --check dist/archive.js && node --check dist/bass.js && node --check dist/kit.js && node --check dist/render-wav.js && node --check dist/wav-worker.js && node --check dist/wav.js && node --check dist/boot.js && node --check dist/app.bundle.js && node --check dist/range.js && node --check dist/barmap.js && node --check dist/i18n.js",
+    "test": "node tests/engine.test.js && node tests/audio.test.js && node tests/bass.test.js && node tests/range.test.js && node tests/improvements.test.js && node tests/i18n.test.js && node tests/genres.test.js",
+    "check": "node --check dist/app.js && node --check dist/engine.js && node --check dist/audio.js && node --check dist/archive.js && node --check dist/bass.js && node --check dist/kit.js && node --check dist/render-wav.js && node --check dist/wav-worker.js && node --check dist/wav.js && node --check dist/boot.js && node --check dist/app.bundle.js && node --check dist/range.js && node --check dist/barmap.js && node --check dist/i18n.js && node --check dist/styles.js",
     "build": "node scripts/build-client.js",
     "test:ui": "node tests/ui.test.js",
     "test:browser": "node tests/browser.test.js"
