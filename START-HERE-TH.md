@@ -26,7 +26,7 @@
 - tests/: การทดสอบ (ใช้ Node.js, รัน npm test)
 
 เป็น rule-based generator ไม่ใช่ AI model
-ยังไม่คลี่ repeat/alternate ending และยังไม่มีชุดเสียง Metal แยกเฉพาะ
+เล่นตาม repeat / alternate ending / jump แบบเดียวกับ Guitar Pro (ปิดได้) ยังไม่มีชุดเสียง Metal แยกเฉพาะ
 อ่านรายละเอียดและข้อจำกัดเพิ่มเติมใน README.md
 
 ## รุ่นแก้ปุ่ม Demo และอัปโหลด
@@ -52,3 +52,12 @@ python -m http.server 8080 --directory dist
 เลือก MIDI bass target → EZbass (+12 semitones) ก่อนดาวน์โหลด MIDI เบส
 โหมดนี้ยกเฉพาะ MIDI เบสขึ้น 12 semitones และไม่ส่ง Program Change โดยไม่เปลี่ยนเสียง Preview หรือ WAV
 เมื่อนำเข้า EZbass ไม่ต้อง transpose เพิ่มอีก
+
+## ฟีเจอร์ใหม่
+
+- แผนที่ห้อง: แตะห้องแรกแล้วแตะห้องสุดท้ายเพื่อเลือกช่วง ลากเมาส์ Shift+คลิก หรือกดชื่อท่อน
+- Section overrides: ตั้งแนว ความหนัก ความซับซ้อน และ double kick แยกตามท่อน
+- Export start: ค่าเริ่มต้น "Song start" ไฟล์มีช่วงเงียบก่อนห้องที่เลือก วางที่ 0:00 ใน DAW ได้เลย
+- Click / Full mix + click ทั้ง WAV และ MIDI และพรีวิวพร้อมคลิกกับนับนำ 1 ห้อง
+- พรีวิวใช้ตัวจับเวลาใน Web Worker เสียงไม่สะดุดเมื่อสลับไปแท็บอื่น
+- ทดสอบในเบราว์เซอร์จริง: npm run test:browser (ต้องมี Playwright)

@@ -5,10 +5,11 @@
   "type": "module",
   "description": "Browser-local Guitar Pro to metal drum MIDI generator",
   "scripts": {
-    "test": "node tests/engine.test.js && node tests/audio.test.js && node tests/bass.test.js && node tests/range.test.js",
-    "check": "node --check dist/app.js && node --check dist/engine.js && node --check dist/audio.js && node --check dist/archive.js && node --check dist/bass.js && node --check dist/kit.js && node --check dist/render-wav.js && node --check dist/wav-worker.js && node --check dist/wav.js && node --check dist/boot.js && node --check dist/app.bundle.js && node --check dist/range.js",
+    "test": "node tests/engine.test.js && node tests/audio.test.js && node tests/bass.test.js && node tests/range.test.js && node tests/improvements.test.js",
+    "check": "node --check dist/app.js && node --check dist/engine.js && node --check dist/audio.js && node --check dist/archive.js && node --check dist/bass.js && node --check dist/kit.js && node --check dist/render-wav.js && node --check dist/wav-worker.js && node --check dist/wav.js && node --check dist/boot.js && node --check dist/app.bundle.js && node --check dist/range.js && node --check dist/barmap.js",
     "build": "node scripts/build-client.js",
-    "test:ui": "node tests/ui.test.js"
+    "test:ui": "node tests/ui.test.js",
+    "test:browser": "node tests/browser.test.js"
   },
   "devDependencies": {
     "happy-dom": "21.0.3",

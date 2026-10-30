@@ -5,7 +5,7 @@
  var timer=setTimeout(function(){if(!complete)report('แอปยังโหลดไม่ครบ กรุณารีเฟรชหน้าเว็บ และตรวจว่าไฟล์ dist ถูกแตกครบ')},12000);
  window.addEventListener('error',function(event){if(event.message)report('เกิดข้อผิดพลาด: '+event.message)});
  window.addEventListener('unhandledrejection',function(event){report('ทำงานไม่สำเร็จ: '+(event.reason&&event.reason.message?event.reason.message:String(event.reason)))});
- var script=document.createElement('script');script.src='app.bundle.js?v=20261017-ezbass-mapping';
+ var script=document.createElement('script');script.src='app.bundle.js?v=20261030-repeats-barmap-click';
  script.onload=function(){complete=true;clearTimeout(timer)};
  script.onerror=function(){complete=true;clearTimeout(timer);report('โหลดโค้ดแอปไม่สำเร็จ กรุณาตรวจว่าไฟล์ app.bundle.js อยู่ในโฟลเดอร์ dist และรีเฟรชหน้าเว็บ')};
  document.body.appendChild(script);
