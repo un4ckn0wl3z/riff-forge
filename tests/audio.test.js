@@ -12,4 +12,4 @@ const chunks=[];let progress=0;for(const c of renderWav(song,result,null,kit)){i
 const single={...song,length:2,bars:[{...song.bars[0],length:2,hits:[]}]};const pieces=[...renderWav(single,{events:[{beat:1,note:36,velocity:127}]},120,kit)];const data=pieces.filter(c=>c.data).map(c=>new Int16Array(c.data));assert.ok(data[0].slice(0,44100).every(x=>x===0));assert.ok(data[0].slice(44100).some(x=>x!==0));
 const tooLong={...song,length:2000};assert.throws(()=>[...renderWav(tooLong,{events:[]},60,kit)],/10/);
 assert.equal(decodeWav(encodeWav(new Float32Array([0,.5,-.5,0]),44100,2)).samples.length,4);
-console.log('PASS: ten audible drum samples, stereo PCM format, full arrangement WAV, no non-finite audio, onset timing, progress and duration limit.');
+console.log('PASS: thirteen audible drum samples, stereo PCM format, full arrangement WAV, no non-finite audio, onset timing, progress and duration limit.');

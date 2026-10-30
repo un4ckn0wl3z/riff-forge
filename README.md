@@ -1,10 +1,10 @@
 # Riff Forge
 
-A browser-local Guitar Pro → metal drum and bass generator. No API key or backend is required.
+A browser-local Guitar Pro → drum and bass generator for metal, rock, funk, shuffle, reggae and more. No API key or backend is required.
 
 - Import `.gp`, `.gpx`, `.gp5`, `.gp4`, `.gp3` with vendored alphaTab 1.8.4. Repeats, alternate endings and jumps are played in Guitar Pro order (can be switched off).
-- Select the rhythm reference track and Heavy Metal, Thrash, Metalcore, Djent, Death or Black Metal.
-- Generate bass from the reference riff with Riff, Pocket or Driving approaches, including low B notes. Preview instrument toggles and export Full mix / Drums / Bass stems.
+- Select the rhythm reference track and a genre from five families (see **Genres** below): Metal, Rock, Groove, Swing and Other.
+- Generate bass from the reference riff with Riff, Pocket, Driving, Root & octave, Root & fifth, Funk sixteenths, Boogie, One drop or Long held notes, including low B notes. *Vary per take* uses the genre's own approaches. Preview instrument toggles and export Full mix / Drums / Bass stems.
 - Set kick density, complexity, riff following, humanization, double kick and fill frequency.
 - Generate 2–6 seeded variations, regenerate individual takes and compare sample-based SoundFont drum previews.
 - Pick a bar range on the bar map (tap first and last bar, drag, shift-click or a section chip) and give sections their own style, intensity, complexity and double kick.
@@ -43,9 +43,27 @@ After import, pick bars on the bar map or type one-based inclusive From bar / To
 
 Choose MIDI bass target → EZbass (+12 semitones) when exporting to EZbass. This adjusts only the bass note-on/off pitches and suppresses the General MIDI program change. Drum notes, velocity, timing and note lengths remain unchanged. Standard / General MIDI is the default. Playback and WAV continue using the original sounding pitches. Files exported with the EZbass profile include `_EZbass` in their name; do not transpose them a second time on import. This profile addresses the octave mismatch confirmed by comparing a supplied Riff Forge audio export (first note approximately 55 Hz) with its EZbass render (approximately 27.5 Hz).
 
+## Genres
+
+Pick a family tab, then a genre. Metal genres keep the original riff-driven generator unchanged. The other families have their own rules:
+
+| Family | Genres | Feel |
+|---|---|---|
+| Metal | Heavy, Thrash, Metalcore, Djent, Death, Black | Riff-following kick, double kick, blasts, breakdowns |
+| Rock | Hard Rock, Classic Rock, Pop Rock, Punk / Pop-punk | Backbeat on 2 and 4, accented eighth hats, crashes on sections; punk's second take is the skank beat |
+| Groove | Funk, R&B / Soul | Sixteenth hats, ghost notes on the snare, syncopated kick, funk bass |
+| Swing | Blues Shuffle, Rock 'n' Roll | Triplet feel, ride with pedal hat on the backbeat, boogie bass, triplet fills |
+| Other | Reggae (One Drop), Ballad / Half-time | One drop / rockers / steppers with cross-stick on 3; half-time snare on 3 and long bass notes |
+
+Choosing a genre outside metal (or switching family) loads that genre's starting Intensity, Complexity and Double kick; adjust them afterwards as you like. Switching between metal genres keeps your settings. The three takes are *tight pocket with closed hats*, *ride cymbal*, and *open-hat accents*.
+
+Bars marked with **triplet feel** (8th or 16th) in Guitar Pro swing in every genre: drums, bass and the reference guitar move the off-beat to the last triplet. 3/4, 6/8 (backbeat on the dotted-quarter pulse) and odd meters such as 7/8 are supported.
+
+The kit adds cross-stick (37), pedal hi-hat (44) and ride bell (53) to the original pieces; MIDI uses the same General MIDI drum notes.
+
 ## Section overrides
 
-Select bars on the bar map, choose a genre, intensity, complexity and double kick under **Section overrides**, then press **+ ใช้กับ bar …**. Overridden bars are underlined in orange on the map. Overrides use full-song bar numbers, so they also apply when you generate only part of the song; later overrides win where they overlap. Remove one with ×.
+Select bars on the bar map, choose a genre (grouped by family; choosing one loads its starting values), intensity, complexity and double kick under **Section overrides**, then press **+ ใช้กับ bar …**. Overridden bars are underlined in orange on the map. Overrides use full-song bar numbers, so they also apply when you generate only part of the song; later overrides win where they overlap. Remove one with ×.
 
 To generate only those sections, set **Generate** (under the bar range) to one of:
 

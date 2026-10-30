@@ -19,6 +19,7 @@
 
 - dist/app.js: หน้าจอและการทำงานของแอป
 - dist/engine.js: อ่านข้อมูลริฟฟ์ สร้างกลอง ส่งออก MIDI
+- dist/styles.js: แนวเพลงทั้งหมด (Metal, Rock, Groove, Swing, Other) และ triplet feel
 - dist/bass.js: สร้างไลน์เบส
 - dist/audio.js: เล่นเสียง
 - dist/render-wav.js, dist/wav-worker.js: สร้าง WAV
@@ -27,6 +28,8 @@
 
 เป็น rule-based generator ไม่ใช่ AI model
 เล่นตาม repeat / alternate ending / jump แบบเดียวกับ Guitar Pro (ปิดได้) ยังไม่มีชุดเสียง Metal แยกเฉพาะ
+มีแนวเพลงนอกจาก metal: Hard Rock, Classic Rock, Pop Rock, Punk, Funk, R&B / Soul, Blues Shuffle, Rock 'n' Roll, Reggae และ Ballad เลือกแนวแล้วระบบจะตั้ง Intensity / Complexity / Double kick เริ่มต้นให้ ปรับต่อได้
+ห้องที่ตั้ง triplet feel ไว้ใน Guitar Pro จะ swing ตามทุกแนว
 อ่านรายละเอียดและข้อจำกัดเพิ่มเติมใน README.md
 
 ## รุ่นแก้ปุ่ม Demo และอัปโหลด

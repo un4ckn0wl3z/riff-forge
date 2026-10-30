@@ -72,6 +72,17 @@ try{
  await page.click('#generate');await page.waitForSelector('.song-card');assert.match(await page.textContent('.song-card .details'),/Bar 2–3 \+ 6–8 \(joined\)/);
  const joinMid=await save('.download:not(.wav-download)','drums'),jOns=[];{let i=14;while(i<joinMid.length&&joinMid.toString('latin1',i,i+4)==='MTrk'){const end=i+8+joinMid.readUInt32BE(i+4);let p=i+8,tick=0;while(p<end){let v=0,c;do{c=joinMid[p++];v=v*128+(c&127)}while(c&128);tick+=v;const st=joinMid[p];if(st===255)p+=3+joinMid[p+2];else{if((st&0xf0)===0x90&&joinMid[p+2]>0)jOns.push(tick/960);p+=3}}i=end}}
  assert.ok(jOns.length&&jOns.every(b=>b>=0&&b<20),'joined file is 5 bars long');assert.ok(jOns.some(b=>b<8)&&jOns.some(b=>b>=8),'both ranges present');
+ // genre families: Groove → Funk loads its starting settings; overrides list genres by family
+ assert.deepEqual(await page.$$eval('#genreFamilies .family',els=>els.map(e=>e.textContent)),['Metal','Rock','Groove','Swing','Other']);
+ await page.click('#genreFamilies .family:has-text("Groove")');assert.deepEqual(await page.$$eval('#genres .genre strong',els=>els.map(e=>e.textContent)),['Funk','R&B / Soul']);
+ await page.click('.genre[data-style="funk"]');assert.equal(await page.inputValue('#density'),'65');assert.equal(await page.textContent('#densityValue'),'65%');assert.equal(await page.isChecked('#doubleKick'),false);assert.match(await text('status'),/ตั้งค่าเริ่มต้นของ Funk/);
+ assert.equal(await page.locator('#genreFamilies .family.has-selected').textContent(),'Groove');
+ assert.equal(await page.locator('#ovStyle optgroup').count(),5);await page.selectOption('#ovStyle','shuffle');assert.equal(await page.inputValue('#ovDensity'),'45');assert.equal(await page.isChecked('#ovDouble'),false);
+ await page.selectOption('#rangeMode','range');await page.click('#generate');await page.waitForSelector('.song-card');
+ assert.match(await page.textContent('.song-card .card-title small'),/^Funk · Tight pocket · closed hats$/);
+ const funkCard=page.locator('.song-card').first();await funkCard.locator('.reference').check();await funkCard.locator('.play-btn').click();await page.waitForTimeout(1200);
+ assert.equal(await page.evaluate(()=>document.getElementById('status').classList.contains('error')),false,await text('status'));await funkCard.locator('.play-btn').click();
+ await page.click('#genreFamilies .family:has-text("Metal")');await page.click('.genre[data-style="thrash"]');assert.equal(await page.inputValue('#density'),'70','back to metal loads metal settings');
  assert.deepEqual(errors,[]);
  // English UI: walk the main flows in English and make sure no Thai text or label is left on the page
  const en=await browser.newPage({acceptDownloads:true,locale:'en-US'}),enErrors=[];en.on('pageerror',e=>enErrors.push(e.message));
@@ -86,8 +97,9 @@ try{
  await en.selectOption('#rangeMode','overrides');await check();await en.selectOption('#rangeMode','joined');await check();
  await en.click('#generate');await en.waitForSelector('.song-card');await check();
  await en.click('#repeatRow');await check();
+ await en.click('#genreFamilies .family:has-text("Swing")');await en.click('.genre[data-style="shuffle"]');await check();assert.match(await en.textContent('#status'),/Loaded Blues Shuffle starting settings/);
  assert.deepEqual([...seen],[],'Thai text left in English mode');
  await en.click('[data-lang="th"]');assert.match(await en.textContent('#scoreNote'),/อ่านตามลำดับห้องที่เขียน|มี repeat/);
  assert.deepEqual(enErrors,[]);
- console.log('PASS: real Chromium — GP upload with repeats/endings expanded, repeat toggle, bar-map tap selection, section override, generate, worker-clocked preview with click and count-in, click WAV aligned to song start within 2 ms, MIDI drums at the excerpt bar, range-aligned export, generate only override bars with silent gaps or joined, English UI with no Thai left and switch back to Thai.');
+ console.log('PASS: real Chromium — GP upload with repeats/endings expanded, repeat toggle, bar-map tap selection, section override, generate, worker-clocked preview with click and count-in, click WAV aligned to song start within 2 ms, MIDI drums at the excerpt bar, range-aligned export, generate only override bars with silent gaps or joined, genre families with starting settings and a Funk preview, English UI with no Thai left and switch back to Thai.');
 }finally{await browser.close();server.close()}
