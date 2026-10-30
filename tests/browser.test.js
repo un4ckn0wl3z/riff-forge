@@ -22,7 +22,7 @@ writeFileSync(gp,new a.exporter.Gp7Exporter().export(a.importer.ScoreLoader.load
 
 const browser=await chromium.launch({args:['--autoplay-policy=no-user-gesture-required']});
 try{
- const page=await browser.newPage({acceptDownloads:true}),errors=[];
+ const page=await browser.newPage({acceptDownloads:true,locale:'th-TH'}),errors=[];
  page.on('pageerror',e=>errors.push(e.message));
  await page.addInitScript(()=>{const W=window.Worker;window.__blobWorkers=0;window.Worker=function(src,opts){if(String(src).startsWith('blob:'))window.__blobWorkers++;return new W(src,opts)}});
  await page.goto(url);await page.waitForFunction(()=>document.getElementById('genres').children.length>0);
@@ -73,5 +73,21 @@ try{
  const joinMid=await save('.download:not(.wav-download)','drums'),jOns=[];{let i=14;while(i<joinMid.length&&joinMid.toString('latin1',i,i+4)==='MTrk'){const end=i+8+joinMid.readUInt32BE(i+4);let p=i+8,tick=0;while(p<end){let v=0,c;do{c=joinMid[p++];v=v*128+(c&127)}while(c&128);tick+=v;const st=joinMid[p];if(st===255)p+=3+joinMid[p+2];else{if((st&0xf0)===0x90&&joinMid[p+2]>0)jOns.push(tick/960);p+=3}}i=end}}
  assert.ok(jOns.length&&jOns.every(b=>b>=0&&b<20),'joined file is 5 bars long');assert.ok(jOns.some(b=>b<8)&&jOns.some(b=>b>=8),'both ranges present');
  assert.deepEqual(errors,[]);
- console.log('PASS: real Chromium — GP upload with repeats/endings expanded, repeat toggle, bar-map tap selection, section override, generate, worker-clocked preview with click and count-in, click WAV aligned to song start within 2 ms, MIDI drums at the excerpt bar, range-aligned export, generate only override bars with silent gaps or joined.');
+ // English UI: walk the main flows in English and make sure no Thai text or label is left on the page
+ const en=await browser.newPage({acceptDownloads:true,locale:'en-US'}),enErrors=[];en.on('pageerror',e=>enErrors.push(e.message));
+ await en.goto(url);await en.waitForFunction(()=>document.getElementById('genres').children.length>0);
+ const thaiLeft=()=>en.evaluate(()=>{const T=/[\u0E00-\u0E7F]/,out=new Set(),w=document.createTreeWalker(document.body,5);for(let n=w.currentNode;n;n=w.nextNode()){const el=n.nodeType===3?n.parentElement:n;if(!el||el.closest('script,style,noscript,[data-noi18n]'))continue;if(n.nodeType===3){if(T.test(n.data))out.add(n.data.trim())}else for(const a of['aria-label','placeholder','title','alt']){const v=n.getAttribute(a);if(v&&T.test(v))out.add(a+': '+v)}}return[...out]});
+ assert.equal(await en.evaluate(()=>document.documentElement.lang),'en');
+ const seen=new Set(),check=async()=>{for(const t of await thaiLeft())seen.add(t)};
+ await check();await en.click('#helpBtn');await check();await en.click('#closeHelp');
+ await en.setInputFiles('#file',gp);await en.waitForFunction(()=>!document.getElementById('generate').disabled);await check();
+ assert.match(await en.textContent('#scoreNote'),/Following repeats \/ endings: 9 bars in playback order \(7 written\)/);
+ await en.click('.bm-bar[data-n="2"]');await en.click('.bm-bar[data-n="3"]');await en.click('#ovAdd');await check();
+ await en.selectOption('#rangeMode','overrides');await check();await en.selectOption('#rangeMode','joined');await check();
+ await en.click('#generate');await en.waitForSelector('.song-card');await check();
+ await en.click('#repeatRow');await check();
+ assert.deepEqual([...seen],[],'Thai text left in English mode');
+ await en.click('[data-lang="th"]');assert.match(await en.textContent('#scoreNote'),/อ่านตามลำดับห้องที่เขียน|มี repeat/);
+ assert.deepEqual(enErrors,[]);
+ console.log('PASS: real Chromium — GP upload with repeats/endings expanded, repeat toggle, bar-map tap selection, section override, generate, worker-clocked preview with click and count-in, click WAV aligned to song start within 2 ms, MIDI drums at the excerpt bar, range-aligned export, generate only override bars with silent gaps or joined, English UI with no Thai left and switch back to Thai.');
 }finally{await browser.close();server.close()}
