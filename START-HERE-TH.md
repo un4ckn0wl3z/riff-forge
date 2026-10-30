@@ -56,7 +56,7 @@ python -m http.server 8080 --directory dist
 ## ฟีเจอร์ใหม่
 
 - แผนที่ห้อง: แตะห้องแรกแล้วแตะห้องสุดท้ายเพื่อเลือกช่วง ลากเมาส์ Shift+คลิก หรือกดชื่อท่อน
-- Section overrides: ตั้งแนว ความหนัก ความซับซ้อน และ double kick แยกตามท่อน
+- Section overrides: ตั้งแนว ความหนัก ความซับซ้อน และ double kick แยกตามท่อน เลือก Generate = Only bars with section overrides เพื่อสร้างเฉพาะท่อนที่ตั้งไว้ ห้องระหว่างกลางเงียบ
 - Export start: ค่าเริ่มต้น "Song start" ไฟล์มีช่วงเงียบก่อนห้องที่เลือก วางที่ 0:00 ใน DAW ได้เลย
 - Click / Full mix + click ทั้ง WAV และ MIDI และพรีวิวพร้อมคลิกกับนับนำ 1 ห้อง
 - พรีวิวใช้ตัวจับเวลาใน Web Worker เสียงไม่สะดุดเมื่อสลับไปแท็บอื่น

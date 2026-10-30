@@ -46,6 +46,8 @@ Choose MIDI bass target → EZbass (+12 semitones) when exporting to EZbass. Thi
 
 Select bars on the bar map, choose a genre, intensity, complexity and double kick under **Section overrides**, then press **+ ใช้กับ bar …**. Overridden bars are underlined in orange on the map. Overrides use full-song bar numbers, so they also apply when you generate only part of the song; later overrides win where they overlap. Remove one with ×.
 
+To generate only those sections and skip the bars in between, set **Generate** (under the bar range) to *Only bars with section overrides*. For example, overrides on bars 5–8 and 17–20 produce drums and bass for just those bars, and bars 9–16 stay silent. With Export start = Song start the files still line up at 0:00 in the DAW.
+
 ## Click and count-in
 
 Each take can preview with **Click** (accent on the downbeat, compound x/8 bars click on dotted quarters) and a one-bar **Count-in**. Export **Click** or **Full mix + click** as WAV, or as MIDI on channel 10 (Hi Wood Block 76 for the downbeat, Low Wood Block 77 for other beats). The click covers the selected bars only.

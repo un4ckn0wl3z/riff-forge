@@ -2,7 +2,7 @@ import assert from'node:assert/strict';
 import{readFileSync}from'node:fs';
 import * as a from'../dist/vendor/alphatab.js';
 import{analyze,playbackOrder,generate,clickEvents,optionsForBar,midi,demo,tempoMap,secondsAt,PPQ}from'../dist/engine.js';
-import{selectBars,padToSongStart}from'../dist/range.js';
+import{selectBars,padToSongStart,onlyBars}from'../dist/range.js';
 import{renderWav}from'../dist/render-wav.js';
 import{decodeWav}from'../dist/wav.js';
 import{DRUM_NOTES}from'../dist/kit.js';
@@ -64,4 +64,16 @@ const onsets=[];let quiet=1e9;pcm.forEach((v,i)=>{if(Math.abs(v)>1500&&quiet>200
 const expected=clickEvents(wavSong).map(e=>Math.round(secondsAt(e.beat,map)*44100));
 assert.equal(onsets.length,expected.length);onsets.forEach((f,i)=>assert.ok(Math.abs(f-expected[i])<=3,`click ${i} at frame ${f}, expected ${expected[i]}`));
 
-console.log('PASS: repeat/ending playback order with written bar numbers and tempo, ranges over played bars, per-section style overrides, click track events, song-start aligned export, click MIDI/WAV stems with sample-accurate onsets.');
+// Generate only the override bars: bars 2–3 and 6–7 of an excerpt 2–7, bars 4–5 stay silent
+const ob=demo(),obClip=selectBars(ob,2,7),obOpt={...base,bassEnabled:true,bassMode:'drive',overrides:[{from:2,to:3,options:{style:'thrash'}},{from:6,to:7,options:{style:'black'}}]};
+const full=generate(obClip,obOpt,11),only=onlyBars(obClip,full,[[2,3],[6,7]]);
+const barNo=e=>obClip.bars.find(b=>e.beat>=b.start&&e.beat<b.start+b.length).sourceIndex+1;
+assert.ok(only.events.length&&only.bassEvents.length);
+assert.ok(only.events.every(e=>[2,3,6,7].includes(barNo(e))),'drums only in the chosen bars');
+assert.ok(only.bassEvents.every(e=>[2,3,6,7].includes(barNo(e))),'bass only in the chosen bars');
+assert.ok(only.bassEvents.every(e=>{const b=obClip.bars.find(x=>e.beat>=x.start&&e.beat<x.start+x.length);return e.beat+e.duration<=b.start+b.length+1e-9}),'bass does not ring into a skipped bar');
+assert.deepEqual(only.events,full.events.filter(e=>[2,3,6,7].includes(barNo(e))),'kept bars are unchanged');
+assert.deepEqual(only.onlyBars,[[2,3],[6,7]]);assert.equal(onlyBars(obClip,full,null),full);
+const obPad=padToSongStart(ob,obClip,only);assert.equal(Math.min(...obPad.result.events.map(e=>e.beat)),4,'aligned export keeps bar 2 at beat 4');
+
+console.log('PASS: repeat/ending playback order with written bar numbers and tempo, ranges over played bars, per-section style overrides, click track events, song-start aligned export, click MIDI/WAV stems with sample-accurate onsets, generate only selected override bars with silent gaps.');
