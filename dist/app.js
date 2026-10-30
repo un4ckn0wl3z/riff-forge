@@ -1,5 +1,6 @@
 import{selectBars,padToSongStart,onlyBars,joinBars}from'./range.js';
 import{BarMap}from'./barmap.js';
+import{initI18n}from'./i18n.js';
 import{loadKit}from'./kit.js';
 import {zip} from './archive.js';
 import * as alphaTab from './vendor/alphatab.js';
@@ -53,4 +54,4 @@ $('helpBtn').onclick=()=>$('help').showModal();$('closeHelp').onclick=()=>$('hel
 
 let exporting=false;
 async function exportWav(index,button,part){if(exporting){status('กำลังสร้าง WAV อีกไฟล์อยู่ กรุณารอสักครู่');return}const result=results[index],snapshot=payload(result),name=filename(index).replace(/\.mid$/,'_'+part+'.wav');let worker;exporting=true;stop();button.disabled=true;button.textContent='0%';try{status('กำลังโหลดเสียงและสร้าง WAV 44.1 kHz / 16-bit stereo…');const kit=await loadKit();worker=new Worker(new URL('./wav-worker.js',document.baseURI),{type:'module'});await new Promise((resolve,reject)=>{worker.onmessage=e=>{if(e.data.error){reject(Error(e.data.error));return}if(e.data.progress!==undefined)button.textContent=Math.round(e.data.progress*100)+'%';if(e.data.blob){download(e.data.blob,name,'audio/wav');resolve()}};worker.onerror=()=>reject(Error('สร้าง WAV ไม่สำเร็จ กรุณาลองอีกครั้ง'));worker.postMessage({song:snapshot.song,result:snapshot.result,override:result.override,kit,part})});status('ดาวน์โหลด WAV พร้อมเสียงแล้ว · '+(song.joined?'ห้องที่เลือกต่อกัน เริ่มที่ 0':alignText(song.rangeStart||1)))}catch(e){status(e.message,true)}finally{worker?.terminate();exporting=false;button.disabled=false;button.textContent='WAV ↓'}}
-
+initI18n();

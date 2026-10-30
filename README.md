@@ -10,13 +10,14 @@ A browser-local Guitar Pro → metal drum and bass generator. No API key or back
 - Pick a bar range on the bar map (tap first and last bar, drag, shift-click or a section chip) and give sections their own style, intensity, complexity and double kick.
 - Export WAV audio (44.1 kHz / 16-bit stereo, full mix, individual instrument stems, a click stem, or full mix + click, maximum 10 minutes), or GM drum MIDI with tempo changes and time signatures; download all takes in a ZIP. Excerpts can start at the song start so files drop at 0:00 in a DAW.
 - Preview with an optional click and a one-bar count-in.
+- Thai / English interface: switch with **TH / EN** in the header. The first visit follows the browser language and the choice is remembered.
 - Optional synthesized guitar reference during preview. Drums use bundled samples rendered from the SONiVOX SoundFont, including picked electric bass. Reference guitar remains synthesized and is not included in WAV exports.
 
 Files remain in the visitor's browser. No upload, persistent user data, AI service, account integration, or remote soundfont is used. Fonts are optional web fonts with local fallbacks.
 
 ## Development
 
-`dist/` is the complete static site. Serve it using an HTTP static server. A prebuilt classic JavaScript bundle is included, so running the app needs no build or dependency installation. To edit and rebuild the client, run `npm install` then `npm run build`. `npm test` validates the engine with a generated GP7 round-trip fixture, seeded composition, riff following, odd meters, tempo changes, MIDI parsing, long scores, repeat/ending playback order, section overrides, song-start alignment and click stems with sample-accurate onsets. `npm run test:browser` drives the real site in Chromium with Playwright (upload, repeats, bar map, overrides, preview, aligned WAV/MIDI exports, measured click timing); it is skipped when Playwright is not installed. `npm run check` validates module syntax. alphaTab license is distributed at `dist/vendor/ALPHATAB-LICENSE.txt`.
+`dist/` is the complete static site. Serve it using an HTTP static server. A prebuilt classic JavaScript bundle is included, so running the app needs no build or dependency installation. To edit and rebuild the client, run `npm install` then `npm run build`. `npm test` validates the engine with a generated GP7 round-trip fixture, seeded composition, riff following, odd meters, tempo changes, MIDI parsing, long scores, repeat/ending playback order, section overrides, song-start alignment and click stems with sample-accurate onsets. `npm run test:browser` drives the real site in Chromium with Playwright (upload, repeats, bar map, overrides, preview, aligned WAV/MIDI exports, measured click timing, and an English pass that fails if any Thai text is left); it is skipped when Playwright is not installed. `npm run check` validates module syntax. alphaTab license is distributed at `dist/vendor/ALPHATAB-LICENSE.txt`.
 
 ## Current limits
 
